@@ -22,67 +22,51 @@ main.main {
     background: url("images/background_image.png") center/cover fixed no-repeat;
 }
 
-.section1 {
-    background: #fff; /* da go opravq utre*/
+.hero-image-section {
     position: relative;
     width: 100%;
-    height: 75vh;
+    height: 90vh;
+    background: url("images/hero_building_wide.png") no-repeat center right;
+    background-size: cover;
+    background-position: center right; 
     display: flex;
-    align-items: stretch;
+    align-items: center;
+    justify-content: flex-start;
     overflow: hidden;
 }
 
-.hero-content {
-    display: flex;
-    width: 100%;
-    height: 100%;
-}
-
 .hero-text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    margin-left: 50px;
+    position: relative;
+    max-width: 650px;
     padding: 80px;
     color: #2f5233;
     text-align: left;
 }
 
 .hero-logo {
-    display: block;
-    width: 280px;
+    width: 260px;
     height: auto;
-    margin: 0 auto 30px auto;
+    margin-bottom: 30px;
 }
 
 .hero-text h1 {
     font-size: 2.8rem;
     margin-bottom: 20px;
+    font-weight: bold;
+    color: #1e3d1e;
 }
 
 .hero-text p {
     font-size: 1.2rem;
-    margin-bottom: 30px;
-    color: #4f6f50;
+    margin-bottom: 35px;
+    color: #385c39;
     line-height: 1.6;
 }
 
 .hero-buttons {
     display: flex;
-    gap: 15px;
-}
-
-.hero-image {
-    flex: 0.8;
-    height: 100%;
-    overflow: hidden;
-}
-
-.hero-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
+    gap: 18px;
 }
 
 .btn {
@@ -228,11 +212,11 @@ main.main {
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 50px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
     justify-items: center;
     width: 100%;
-    max-width: 1000px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
@@ -240,45 +224,51 @@ main.main {
     background: #ffffffd9;
     border: 2px solid #2f5233;
     border-radius: 20px;
-    padding: 35px 25px;
+    padding: 30px 20px;
     text-align: center;
     transition: all 0.4s ease;
     box-shadow: 0 6px 15px rgba(47, 82, 51, 0.15);
     position: relative;
     overflow: hidden;
-    max-width: 400px;
     width: 100%;
+    max-width: 300px;
+    aspect-ratio: 1 / 1; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .service-card:hover {
-    transform: translateY(-10px) scale(1.03);
+    transform: translateY(-10px) scale(1.05);
     box-shadow: 0 12px 25px rgba(47, 82, 51, 0.25);
     border-color: #1e3d1e;
 }
 
 .service-card img {
-    width: 90px;
-    height: 90px;
+    width: 70px;
+    height: 70px;
     object-fit: contain;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     transition: transform 0.4s ease;
 }
 
 .service-card:hover img {
-    transform: scale(1.15) rotate(-3deg);
+    transform: scale(1.1) rotate(-3deg);
 }
 
 .service-card h3 {
     color: #1e3d1e;
-    margin-bottom: 10px;
-    font-size: 1.3rem;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
     font-weight: bold;
 }
 
 .service-card p {
     color: #3d5b3e;
-    font-size: 1rem;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    padding: 0 10px;
 }
 
 .advantages {
