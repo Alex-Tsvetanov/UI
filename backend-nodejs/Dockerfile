@@ -6,8 +6,8 @@ WORKDIR /app
 RUN apk add --no-cache postgresql-client
 
 # Copy package files
-COPY package*.json ./
-RUN npm ci --only=production
+COPY backend-nodejs/package*.json ./
+RUN npm install --omit=dev
 
 # Install grpc tools for proto generation
 RUN npm install -g grpc-tools
@@ -22,7 +22,7 @@ RUN grpc_tools_node_protoc \
     ../proto/domunity.proto
 
 # Copy application code
-COPY . .
+COPY backend-nodejs/ .
 
 # Expose gRPC port
 EXPOSE 50051

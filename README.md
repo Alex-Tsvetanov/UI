@@ -1,5 +1,7 @@
 # DomUnity - Property Management Platform
 
+![CI Status](https://github.com/YOUR_USERNAME/DomUnity-WebApp/workflows/CI%20-%20Backend%20Tests%20and%20Docker%20Build/badge.svg)
+
 A modern property management platform for Bulgarian residential buildings, featuring a React frontend and multiple gRPC backend options (Python, Go, Node.js).
 
 ## 🏗️ Architecture
@@ -188,6 +190,33 @@ HTTP_PORT=8080               # HTTP/REST port (for health checks)
 # Backend URL (provided by Render.com via fromService)
 REACT_APP_BACKEND_URL=https://your-backend.onrender.com
 ```
+
+## 🧪 Testing & Continuous Integration
+
+This project includes comprehensive CI/CD with GitHub Actions that runs:
+- ✅ **Unit Tests** for all three backends
+- ✅ **Integration Tests** with PostgreSQL
+- ✅ **Docker Build Verification** for all images
+- ✅ **Frontend Build Tests**
+- ✅ **Render.yaml Configuration Validation**
+- ✅ **Security Scanning** with Trivy
+
+### Running Tests Locally
+
+```bash
+# Run all tests
+./run-tests.sh
+
+# Or test individual backends
+cd backend-python && pytest -v
+cd backend-nodejs && npm test
+cd backend-go && go test -v ./...
+
+# Test Docker builds
+./test-docker-builds.sh
+```
+
+See [CI_SETUP.md](./CI_SETUP.md) for detailed testing documentation.
 
 ## 🚀 Quick Start
 

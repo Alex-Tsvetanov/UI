@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements
-COPY requirements.txt .
+COPY backend-python/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy proto files and generate code
@@ -20,7 +20,7 @@ RUN python -m grpc_tools.protoc \
     proto/domunity.proto
 
 # Copy application code
-COPY . .
+COPY backend-python/ .
 
 # Expose gRPC port and HTTP port for health checks
 EXPOSE 50051 8080

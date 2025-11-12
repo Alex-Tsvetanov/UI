@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package domunity;
 
+option go_package = "github.com/domunity/backend/proto";
+
 // ==================== Authentication Service ====================
 service AuthService {
   rpc Login(LoginRequest) returns (LoginResponse) {}

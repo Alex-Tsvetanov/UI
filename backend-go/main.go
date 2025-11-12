@@ -19,8 +19,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
-
-	pb "github.com/domunity/backend/proto"
 )
 
 var (
