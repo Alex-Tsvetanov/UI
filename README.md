@@ -1,344 +1,301 @@
-# DomUnity - Full Stack Application
+# DomUnity - Property Management Platform
 
-Modern property management platform built with **React** frontend, **Rust** gRPC backend, and **PostgreSQL** database.
+A modern property management platform for Bulgarian residential buildings, featuring a React frontend and multiple gRPC backend options (Python, Go, Node.js).
 
-## 🏗️ Tech Stack
+## 🏗️ Architecture
 
-### Backend
-- **Rust** with **Tonic** (gRPC framework)
-- **PostgreSQL** database
-- **SQLx** for database operations
-- **JWT** authentication with bcrypt
-- **Protocol Buffers** for API definitions
+```
+┌─────────────────┐
+│  React Frontend │
+│   (Static SPA)  │
+└────────┬────────┘
+         │ HTTP/gRPC-Web
+         │
+    ┌────┴─────────────────────┐
+    │   Choose ONE Backend:    │
+    ├──────────┬───────┬───────┤
+    │  Python  │  Go   │Node.js│
+    │  gRPC    │ gRPC  │ gRPC  │
+    └────┬─────┴───┬───┴───┬───┘
+         │         │       │
+         └─────────┼───────┘
+                   │
+         ┌─────────┴─────────┐
+         │  PostgreSQL DB    │
+         │  (Render.com)     │
+         └───────────────────┘
+```
+
+## 🚀 Features
+
+### User Features
+- 🔐 **Authentication**: Secure JWT-based login/signup with bcrypt password hashing
+- 👤 **User Profiles**: Personal information management
+- 🏢 **Building Management**: View building details, apartments, entrances
+- 💰 **Financial Reports**: Detailed monthly billing and payment tracking
+- 📅 **Events**: Community events and announcements
+- 📧 **Contact Forms**: Send inquiries, request offers/presentations
+
+### Technical Features
+- **gRPC Services**: High-performance RPC communication
+- **HTTP Health Checks**: Standard REST endpoint for monitoring (compatible with Render.com)
+- **Multiple Backend Options**: Choose Python, Go, or Node.js based on your preferences
+- **PostgreSQL Database**: Relational data storage with automatic schema initialization
+- **Docker Deployment**: Containerized backends for easy deployment
+- **Comprehensive Logging**: Extensive logging in all backends for debugging
+- **Frankfurt Region**: Low-latency deployment for Bulgarian users
+
+## 📋 Backend Comparison
+
+| Feature | Python | Go | Node.js |
+|---------|--------|-----|---------|
+| **Runtime** | Python 3.11 | Go 1.21 | Node 20 |
+| **Performance** | Good | Excellent | Very Good |
+| **Memory Usage** | Medium | Low | Medium-Low |
+| **Startup Time** | Fast | Very Fast | Fast |
+| **Dependencies** | grpcio, psycopg2, bcrypt, PyJWT | grpc, lib/pq, bcrypt, jwt | @grpc/grpc-js, pg, bcrypt, jsonwebtoken |
+| **Docker Image Size** | ~500MB | ~50MB (multi-stage) | ~200MB |
+| **Learning Curve** | Easy | Medium | Easy |
+| **Best For** | Rapid development, Python familiarity | Production performance, low resources | JavaScript/TypeScript teams |
+
+**Recommendation**: 
+- **Choose Python** if: Your team knows Python, you want fast development
+- **Choose Go** if: You need maximum performance and minimal resource usage
+- **Choose Node.js** if: Your team is JavaScript-focused or wants unified JS stack
+
+## 🗂️ Database Schema
+
+```sql
+-- Users table with authentication
+users (id, username, email, password_hash, created_at)
+
+-- User profile information
+user_profiles (id, user_id, full_name, phone, building_id, entrance, apartment)
+
+-- Building information
+buildings (id, name, address, city, postal_code, total_apartments, year_built)
+
+-- Apartment details
+apartments (id, building_id, apartment_number, entrance, floor, area, residents_count)
+
+-- Financial records
+financial_records (id, user_id, building_id, apartment_id, month, year, amount, paid, description)
+
+-- Community events
+events (id, building_id, title, description, event_date, created_by, created_at)
+
+-- Contact form submissions
+contact_requests (id, name, email, phone, message, request_type, created_at)
+```
+
+## 🛠️ Technology Stack
 
 ### Frontend
-- **React 18** with **TypeScript**
-- **Vite** for fast development
-- **Connect-Web** (gRPC-Web client)
-- **React Router** for navigation
-- **React Query** for state management
-- **CSS Modules** for styling
+- **React 18.2.0**: UI framework
+- **React Router DOM 6.21.1**: Client-side routing
+- **CSS3**: Styling with modern flexbox/grid layouts
+- **Bulgarian Language**: Full UI in Bulgarian
 
-## 📁 Project Structure
+### Backend Options
+
+#### Python Backend
+- **grpcio 1.60.0**: gRPC framework
+- **psycopg2-binary 2.9.9**: PostgreSQL driver
+- **bcrypt 4.1.2**: Password hashing
+- **PyJWT 2.8.0**: JWT token generation
+
+#### Go Backend
+- **google.golang.org/grpc 1.60.1**: gRPC framework
+- **github.com/lib/pq 1.10.9**: PostgreSQL driver
+- **golang.org/x/crypto/bcrypt**: Password hashing
+- **github.com/golang-jwt/jwt/v5**: JWT tokens
+
+#### Node.js Backend
+- **@grpc/grpc-js 1.9.14**: gRPC framework
+- **pg 8.11.3**: PostgreSQL client
+- **bcrypt 5.1.1**: Password hashing
+- **jsonwebtoken 9.0.2**: JWT tokens
+
+### Database
+- **PostgreSQL 15**: Relational database on Render.com free tier
+
+## 📦 Project Structure
 
 ```
 UI/
-├── backend/                 # Rust gRPC server
+├── proto/
+│   └── domunity.proto              # gRPC service definitions
+├── backend-python/
+│   ├── server.py                   # Main gRPC server
+│   ├── db.py                       # Database operations
+│   ├── Dockerfile                  # Container image
+│   ├── requirements.txt            # Python dependencies
+│   ├── generate_proto.sh           # Proto compilation script
+│   └── .env.example                # Environment template
+├── backend-go/
+│   ├── main.go                     # Entry point & auth service
+│   ├── services.go                 # Other gRPC services
+│   ├── Dockerfile                  # Multi-stage build
+│   ├── go.mod                      # Go dependencies
+│   └── .env.example                # Environment template
+├── backend-nodejs/
+│   ├── server.js                   # Main gRPC server
+│   ├── db.js                       # Database operations
+│   ├── Dockerfile                  # Container image
+│   ├── package.json                # Node dependencies
+│   └── .env.example                # Environment template
+├── frontend/
+│   ├── public/
+│   │   └── index.html              # HTML template
 │   ├── src/
-│   │   ├── main.rs
-│   │   ├── services/        # gRPC service implementations
-│   │   ├── db/              # Database models & pool
-│   │   └── utils/           # JWT, password, validation
-│   ├── migrations/          # SQL migrations
-│   ├── Cargo.toml
-│   └── build.rs
-├── frontend/                # React application
-│   ├── src/
-│   │   ├── components/      # React components
-│   │   ├── pages/           # Page components
-│   │   ├── api/             # gRPC clients
-│   │   ├── context/         # React contexts
-│   │   ├── gen/             # Generated TypeScript from protos
-│   │   └── styles/          # CSS files
-│   ├── package.json
-│   └── vite.config.ts
-├── proto/                   # Protocol Buffer definitions
-│   └── api/v1/
-│       ├── auth.proto
-│       ├── contact.proto
-│       └── offer.proto
-└── docker-compose.yml       # PostgreSQL setup
+│   │   ├── App.js                  # Main app & routing
+│   │   ├── components/             # Reusable components
+│   │   │   ├── Header.js           # Navigation header
+│   │   │   └── Footer.js           # Site footer
+│   │   └── pages/                  # Page components
+│   │       ├── Home.js             # Landing page
+│   │       ├── Login.js            # Login form
+│   │       ├── Signup.js           # Registration form
+│   │       ├── Profile.js          # User dashboard
+│   │       ├── Contacts.js         # Contact form
+│   │       └── Offer.js            # Offer request
+│   └── package.json                # Frontend dependencies
+├── render.yaml                     # Render.com deployment config
+├── README.md                       # This file
+├── QUICKSTART.md                   # Fast deployment guide
+└── DEPLOYMENT.md                   # Detailed deployment docs
 ```
 
-## 🚀 Getting Started
+## 🔧 Environment Variables
 
-### Prerequisites
-
-- **Rust** (1.70+): Install from [rustup.rs](https://rustup.rs/)
-- **Node.js** (18+): Install from [nodejs.org](https://nodejs.org/)
-- **PostgreSQL** (14+): Or use Docker Compose
-- **Protocol Buffers Compiler**: `brew install protobuf` (macOS) or download from [GitHub](https://github.com/protocolbuffers/protobuf/releases)
-
-### 1. Database Setup
-
-#### Option A: Using Docker Compose (Recommended)
+### Backend Environment Variables (All backends use same variables)
 
 ```bash
-# Create docker-compose.yml in project root (see below)
-docker-compose up -d
+# Database Connection (provided by Render.com automatically)
+DATABASE_URL=postgresql://user:password@host:port/database
+
+# JWT Secret (generate a random string)
+JWT_SECRET=your-secret-key-here
+
+# Server Configuration
+GRPC_PORT=50051              # gRPC server port
+HTTP_PORT=8080               # HTTP/REST port (for health checks)
 ```
 
-#### Option B: Local PostgreSQL
+### Frontend Environment Variables
 
 ```bash
-# Create database
-createdb domunity
-
-# Or using psql
-psql postgres
-CREATE DATABASE domunity;
+# Backend URL (provided by Render.com via fromService)
+REACT_APP_BACKEND_URL=https://your-backend.onrender.com
 ```
 
-### 2. Backend Setup
+## 🚀 Quick Start
 
-```bash
-cd backend
+See [QUICKSTART.md](./QUICKSTART.md) for a 5-minute deployment guide.
 
-# Copy environment file
-cp .env.example .env
+## 📚 Detailed Deployment
 
-# Edit .env with your database credentials
-# DATABASE_URL=postgresql://username:password@localhost:5432/domunity
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for comprehensive deployment instructions.
 
-# Build the project (this will generate Rust code from .proto files)
-cargo build
+## 🔍 gRPC Services
 
-# Run migrations
-cargo install sqlx-cli --no-default-features --features postgres
-sqlx database create
-sqlx migrate run
+### AuthService
+- `Login(LoginRequest) → LoginResponse`: Authenticate user
+- `Register(RegisterRequest) → RegisterResponse`: Create new account
+- `RefreshToken(RefreshTokenRequest) → RefreshTokenResponse`: Renew JWT
+- `ForgotPassword(ForgotPasswordRequest) → ForgotPasswordResponse`: Password reset
 
-# Run the server
-cargo run
+### UserService
+- `GetProfile(GetProfileRequest) → UserProfile`: Fetch user profile
+- `UpdateProfile(UpdateProfileRequest) → UserProfile`: Update profile info
 
-# Server will start on http://localhost:50051
+### BuildingService
+- `GetBuilding(GetBuildingRequest) → Building`: Get building details
+- `ListApartments(ListApartmentsRequest) → ListApartmentsResponse`: List all apartments
+- `GetApartment(GetApartmentRequest) → Apartment`: Get specific apartment
+
+### FinancialService
+- `GetFinancialReport(FinancialReportRequest) → FinancialReportResponse`: Monthly billing
+
+### EventService
+- `ListEvents(ListEventsRequest) → ListEventsResponse`: Get community events
+- `CreateEvent(CreateEventRequest) → Event`: Post new event
+
+### ContactService
+- `SendContactForm(ContactFormRequest) → ContactFormResponse`: Submit contact form
+- `RequestOffer(OfferRequest) → OfferResponse`: Request service offer
+- `RequestPresentation(PresentationRequest) → PresentationResponse`: Request demo
+
+### HealthService
+- `Check(HealthCheckRequest) → HealthCheckResponse`: Service health status
+
+## 🐛 Debugging & Logging
+
+All backends include extensive logging:
+
+```
+================================================================================
+STARTING DOMUNITY GRPC SERVER
+================================================================================
+[TIMESTAMP] Database connection established
+[TIMESTAMP] Schema initialized successfully
+[TIMESTAMP] gRPC server started on port 50051
+================================================================================
 ```
 
-### 3. Frontend Setup
+**Log Locations**:
+- **Development**: stdout/stderr (visible in `docker logs`)
+- **Render.com**: Available in the Logs tab of each service
 
-```bash
-cd frontend
+**Common Issues**:
+1. **Database Connection Fails**: Check `DATABASE_URL` environment variable
+2. **Frontend Can't Connect**: Verify `REACT_APP_BACKEND_URL` is set correctly
+3. **Proto Compilation Errors**: Ensure `protoc` is installed in Docker image
 
-# Install dependencies
-npm install
+## ⚠️ Known Limitations
 
-# The proto files need to be compiled to TypeScript
-# Install buf CLI globally
-npm install -g @bufbuild/buf
+1. **fromService.property.host**: Returns only the hostname (e.g., `domunity-backend-python-hegi`) without `.onrender.com`. The frontend needs to append the full domain or use Render's internal networking.
 
-# Generate TypeScript code from proto files
-npm run generate-proto
+2. **Free Tier Sleep**: Render.com free tier services sleep after 15 minutes of inactivity. First request after sleep takes ~30 seconds to wake up.
 
-# Start development server
-npm run dev
+3. **gRPC-Web**: Currently not implemented. Frontend uses HTTP/JSON endpoints that wrap gRPC calls. For native gRPC-Web, add Envoy proxy.
 
-# Frontend will start on http://localhost:5173
-```
+## 📈 Scaling Considerations
 
-## 📝 Environment Variables
+- **Horizontal Scaling**: All backends are stateless and can scale horizontally
+- **Database Connection Pooling**: Configured in all backends (max 10 connections)
+- **Caching**: Consider adding Redis for session storage and caching
+- **CDN**: Frontend static assets can be served via CDN
 
-### Backend (.env)
-```env
-DATABASE_URL=postgresql://domunity:password@localhost:5432/domunity
-JWT_SECRET=your-super-secret-jwt-key-min-32-characters-long
-RUST_LOG=info,domunity_backend=debug
-SERVER_HOST=127.0.0.1
-SERVER_PORT=50051
-FRONTEND_URL=http://localhost:5173
-```
+## 🔒 Security
 
-### Frontend (.env)
-```env
-VITE_API_URL=http://localhost:50051
-```
-
-## 🐳 Docker Compose Configuration
-
-Create `docker-compose.yml` in project root:
-
-```yaml
-version: '3.8'
-
-services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: domunity-db
-    environment:
-      POSTGRES_USER: domunity
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: domunity
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U domunity"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  postgres_data:
-```
-
-## 🔧 Development Workflow
-
-### Backend Development
-
-```bash
-cd backend
-
-# Run in watch mode (requires cargo-watch)
-cargo install cargo-watch
-cargo watch -x run
-
-# Run tests
-cargo test
-
-# Format code
-cargo fmt
-
-# Lint
-cargo clippy
-```
-
-### Frontend Development
-
-```bash
-cd frontend
-
-# Development server with hot reload
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Regenerate proto files after changes
-npm run generate-proto
-```
-
-## 📋 API Documentation
-
-### Authentication
-- `Login(LoginRequest)` - User login
-- `Signup(SignupRequest)` - User registration  
-- `RefreshToken(RefreshTokenRequest)` - Refresh access token
-- `GetCurrentUser()` - Get logged-in user info
-
-### Contact
-- `SubmitContact(ContactRequest)` - Submit contact form
-- `SubscribeNewsletter(NewsletterRequest)` - Subscribe to newsletter
-
-### Offers
-- `SubmitOffer(OfferRequest)` - Request a property management offer
-- `RequestPresentation(PresentationRequest)` - Schedule a presentation
-
-## 🔒 Security Features
-
-- ✅ Bcrypt password hashing
-- ✅ JWT token authentication  
-- ✅ HTTPS/TLS support
-- ✅ CORS configuration
-- ✅ Input validation (client & server)
-- ✅ SQL injection prevention (parameterized queries)
-- ✅ Password strength requirements
-
-## 📱 Features
-
-### Completed
-- ✅ User authentication (login/signup)
-- ✅ Contact form submission
-- ✅ Offer request system
-- ✅ Presentation scheduling
-- ✅ Newsletter subscription
-- ✅ Responsive design system
-- ✅ Form validation
-- ✅ Error handling
-
-### To Complete (Next Steps)
-
-1. **Copy images folder** from root to `frontend/public/images/`
-2. **Create React components** from existing HTML:
-   - Header component
-   - Footer component
-   - Home page
-   - Login/Signup pages
-   - Contact page
-   - Offer page
-3. **Add routing** with React Router
-4. **Style components** using CSS modules
-5. **Connect forms** to gRPC backend
-6. **Add loading states** and error boundaries
-7. **Implement protected routes**
-
-## 🎨 Design System
-
-Colors defined in `frontend/src/styles/variables.css`:
-- Primary: `#2f5233`
-- Secondary: `#88ae8d`
-- Accent: `#c8f5ce`
-- Light backgrounds: `#d6f5d0`, `#eaffea`
-
-## 🧪 Testing
-
-### Backend Tests
-```bash
-cd backend
-cargo test
-```
-
-### Frontend Tests  
-```bash
-cd frontend
-npm test
-```
-
-## 📦 Production Deployment
-
-### Backend
-```bash
-cd backend
-cargo build --release
-./target/release/server
-```
-
-### Frontend
-```bash
-cd frontend
-npm run build
-# Serve the dist/ folder with any static host
-```
-
-### Deploy Options
-- **Frontend**: Vercel, Netlify, Cloudflare Pages
-- **Backend**: Railway, Fly.io, AWS ECS, Google Cloud Run
-- **Database**: AWS RDS, Supabase, Railway
+- ✅ **Password Hashing**: bcrypt with salt rounds (12)
+- ✅ **JWT Tokens**: HS256 algorithm, 24-hour expiration
+- ✅ **SQL Injection Prevention**: Parameterized queries in all backends
+- ✅ **HTTPS**: Enforced by Render.com
+- ⚠️ **CORS**: Configure based on your domain requirements
+- ⚠️ **Rate Limiting**: Not implemented (add nginx or middleware)
 
 ## 🤝 Contributing
 
-1. Create a feature branch
-2. Make your changes
-3. Run tests and linters
-4. Submit a pull request
+1. Choose your preferred backend (Python/Go/Node.js)
+2. Make changes to the relevant backend directory
+3. Test locally with Docker
+4. Update proto file if adding new services
+5. Regenerate proto bindings: `./generate_proto.sh`
+6. Update frontend to consume new endpoints
 
-## 📄 License
+## 📝 License
 
-MIT License - see LICENSE file
-
-## 🆘 Troubleshooting
-
-### "Cannot connect to database"
-- Ensure PostgreSQL is running
-- Check DATABASE_URL in backend/.env
-- Verify database exists: `psql -l`
-
-### "Proto generation failed"
-- Install buf: `npm install -g @bufbuild/buf`
-- Check proto files syntax
-- Run `buf build` in proto directory
-
-### "CORS errors in browser"
-- Ensure backend SERVER is configured with correct FRONTEND_URL
-- Check browser console for exact error
-- Verify gRPC-Web layer is enabled in backend
+See [LICENSE](./LICENSE) file for details.
 
 ## 📞 Support
 
-For issues or questions, please open a GitHub issue.
+For issues or questions:
+- Check [DEPLOYMENT.md](./DEPLOYMENT.md) troubleshooting section
+- Review Render.com logs for error messages
+- Verify environment variables are set correctly
 
 ---
 
-**Built with ❤️ using Rust, React, and gRPC**
+**Built for Bulgarian property management communities** 🇧🇬
